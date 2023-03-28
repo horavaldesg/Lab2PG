@@ -6,6 +6,7 @@ using UnityEngine;
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour
 {
+    public static event Action showOptions;
     //Movement Systems
     private PlayerControls _controls;
     private CharacterController _cc;
@@ -30,10 +31,16 @@ public class PlayerController : MonoBehaviour
         TryGetComponent(out _cc);
         _controls = new PlayerControls();
         
+        //Player Movement
         _controls.Player.Move.performed += tgb => _move = tgb.ReadValue<Vector2>();
         _controls.Player.Move.canceled += tgb => _move = Vector2.zero;
+        
+        //Player Jump
         _controls.Player.Jump.started += tgb => Jump();
         _controls.Player.Jump.canceled += tgb => _jump = false;
+
+        //Options Event
+        _controls.Player.Options.started += tgb => showOptions?.Invoke();
     }
 
     private void OnEnable()
@@ -48,15 +55,20 @@ public class PlayerController : MonoBehaviour
     
     private void Update()
     {
+        //Moves Player
         _movement = Vector3.zero;
         var xSpeed = _move.y * playerSpeed * Time.deltaTime;
         _movement += transform.forward * xSpeed;
         var ySpeed = _move.x * playerSpeed * Time.deltaTime;
         _movement += transform.right * ySpeed;
+        
         //Gravity
         _verticalSpeed += Gravity * Time.deltaTime;
 
+        //Player Jump
         _movement += transform.up * (_verticalSpeed * Time.deltaTime);
+        
+        //Jump Check
         if (Physics.CheckSphere(checkPos.position,0.5f, groundMask) && _verticalSpeed <= 0)
         {
             _grounded = true;
@@ -74,6 +86,7 @@ public class PlayerController : MonoBehaviour
             _jump = false;
         }
         
+        //Player Movement
         _cc.Move(_movement);
     }
     
