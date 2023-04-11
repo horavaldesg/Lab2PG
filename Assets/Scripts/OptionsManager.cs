@@ -4,24 +4,28 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class OptionsManager : MonoBehaviour
 {
     [SerializeField] private TMP_InputField sensInput;
     [SerializeField] private GameObject optionsMenu;
+    [SerializeField] private GameObject levelText;
     
-    private FloatVal sens;
+    private FloatVal _sens;
     
     private void Awake()
     {
-        sens = Resources.Load<FloatVal>("ScriptableObjects/sensVal");
+        _sens = Resources.Load<FloatVal>("ScriptableObjects/sensVal");
     }
     
     private void Start()
     {
         if(optionsMenu.activeSelf)
             ShowOptions(); // Hides Options Menu
-        sensInput.placeholder.GetComponent<TextMeshProUGUI>().SetText(sens.val.ToString()); // Sets sens input field to current sens
+        sensInput.placeholder.GetComponent<TextMeshProUGUI>().SetText(_sens.val.ToString()); // Sets sens input field to current sens
+        levelText.TryGetComponent(out TextMeshProUGUI textMeshProUGUI);
+        textMeshProUGUI.SetText(SceneManager.GetActiveScene().name);
     }
     
     private void OnEnable()
@@ -45,6 +49,6 @@ public class OptionsManager : MonoBehaviour
     private void ChangeSens(TMP_InputField newSens)
     {
         float.TryParse(newSens.text, out var sensitivity); // Converts user input to float
-        sens.val = sensitivity; // sets new sens
+        _sens.val = sensitivity; // sets new sens
     }
 }

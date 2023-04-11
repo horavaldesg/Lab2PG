@@ -7,6 +7,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public static event Action showOptions;
+
     //Movement Systems
     private PlayerControls _controls;
     private CharacterController _cc;
