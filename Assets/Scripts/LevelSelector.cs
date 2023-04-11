@@ -6,6 +6,11 @@ using UnityEngine.SceneManagement;
 
 public class LevelSelector : MonoBehaviour
 {
+    private void Awake()
+    {
+        Cursor.lockState = CursorLockMode.None;
+    }
+
     public void LoadLevel(int levelNum)
     {
         //Loads Specific Level
